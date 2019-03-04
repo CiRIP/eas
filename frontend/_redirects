@@ -1,2 +1,3 @@
+/graphql	http://rmn-01.n.cip.fun:45000/graphql			200
 /graphql/*	http://rmn-01.n.cip.fun:45000/graphql/:splat	200
 /*			/index.html										200
