@@ -16,3 +16,14 @@ services:
       - 5432:5432
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
+  api:
+    build:
+      context: ./postgres
+      dockerfile: postgraphile.dockerfile
+    restart: always
+    ports:
+      - 45000:5000
+    command: --connection postgres://postgraphile:ari@db/eas --schema public --default-role anonymous --secret keyboard_kitten --token public.jwt_token --enhance-graphiql --append-plugins @graphile-contrib/pg-simplify-inflector --simple-collections only -o
+    depends_on:
+      db:
+        condition: service_healthy

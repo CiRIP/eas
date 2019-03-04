@@ -136,6 +136,8 @@ COMMENT ON COLUMN private.admin_account.id IS 'Administrator account identifier'
 COMMENT ON COLUMN private.admin_account.password IS 'Administrator hashed password';
 
 
+ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
+
 DROP FUNCTION IF EXISTS public.register_user(text, text, text, integer, text, boolean, text);
 CREATE FUNCTION public.register_user(
 	participation_id	text,
@@ -235,8 +237,6 @@ $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.current_user() is 'Gets currently authenticated user by JWT';
 
 
-ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
-
 GRANT USAGE ON SCHEMA public TO anonymous, authenticated, admin_authenticated;
 
 GRANT SELECT ON TABLE public.user TO authenticated, admin_authenticated;
@@ -252,8 +252,8 @@ GRANT INSERT, UPDATE, DELETE ON TABLE public.submission to admin_authenticated;
 GRANT EXECUTE ON FUNCTION public.authenticate(text, text) TO anonymous, authenticated, admin_authenticated;
 GRANT EXECUTE ON FUNCTION public.current_user() TO anonymous, authenticated, admin_authenticated;
 
-GRANT EXECUTE ON FUNCTION public.register_user(text, text, text, integer, text, boolean, text) TO anonymous, admin_authenticated;
-GRANT EXECUTE ON FUNCTION public.register_admin(text, text, text, text) TO anonymous;
+GRANT EXECUTE ON FUNCTION public.register_user(text, text, text, integer, text, boolean, text) TO admin_authenticated;
+GRANT EXECUTE ON FUNCTION public.register_admin(text, text, text, text) TO admin_authenticated;
 
 ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.submission ENABLE ROW LEVEL SECURITY;
@@ -267,3 +267,6 @@ CREATE POLICY select_submission ON public.submission FOR SELECT TO authenticated
 
 EXCEPTION WHEN duplicate_object THEN null;
 END $$;
+
+--CREATE DEFAULT ADMINISTRATOR ACCOUNT
+SELECT public.register_admin('admin', 'admin', 'Default', 'Administrator');
