@@ -75,7 +75,7 @@ class Login extends Component {
 						<input
 							name="id"
 							class="
-								py-3 px-4 ml-2
+								py-3 px-4 ml-2 w-login-input
 								bg-grey-lightest
 								rounded-full rounded-l-none
 								border-none
@@ -98,7 +98,7 @@ class Login extends Component {
 						<input
 							name="accessCode"
 							class="
-								py-3 px-4 ml-2
+								py-3 px-4 ml-2 w-login-input
 								bg-grey-lightest
 								rounded-full rounded-l-none
 								border-none

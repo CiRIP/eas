@@ -59,6 +59,10 @@
       left: 0;
       right: 0;
   }
+
+  .w-login-input {
+      width: 225px;
+  }
  
  /**
   * This injects all of Tailwind's utility classes, generated based on your
