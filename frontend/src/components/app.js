@@ -33,6 +33,7 @@ import Home from '../routes/home';
 import Tasks from '../routes/tasks';
 import TaskView from '../routes/task-view';
 import Login from '../routes/login';
+import Logout from '../routes/logout';
 
 
 
@@ -60,6 +61,7 @@ export default class App extends Component {
 						<Tasks path="/tasks" />
 						<TaskView path="/tasks/:id/:?" />
 						<Login path="/login" />
+						<Logout path="/logout" />
 					</Router>
 				</main>
 			</ApolloProvider>

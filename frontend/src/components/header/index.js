@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Link } from 'preact-router/match';
+import { Link, Match } from 'preact-router/match';
 
 const Header = {};
 
@@ -10,7 +10,35 @@ Header.Main = props => (
 		bg-indigo-darkest
 		text-white text-center"
 	>
-		<div class="font-bold text-2xl mb-2">{props.title}</div>
+		<Match path="/">
+			{({ matches, path, url }) => (
+				<div style="top: 0;" class="
+					absolute container mx-auto h-16
+					border-b border-indigo-black
+					flex flex-row items-center justify-between"
+				>
+					<Link href="/tasks">
+						<div class="text-sm w-16">
+							{path == '/tasks' || path == '/tasks/' ? null :
+							<svg class="fill-current ml-8 align-middle" viewBox="0 0 16 16" height="16">
+								<polyline fill="none" stroke="white" points="12,0 4,8 12,16" />
+							</svg>}
+						</div>
+					</Link>
+					<div class="font-black">EAS Demo</div>
+					<Link href="/logout">
+						<div class="w-16">
+							<svg class="fill-current mr-8 align-middle" viewBox="0 0 16 16" height="16">
+								<polyline fill="none" stroke="white" strokeWidth="2" points="16,4 16,0 0,0 0,16 16,16 16,12" />
+								<polyline fill="none" stroke="white" strokeWidth="1" points="4,8 15,8" />
+								<polyline fill="none" stroke="white" strokeWidth="1" points="11,4 15,8 11,12" />
+							</svg>
+						</div>
+					</Link>
+				</div>
+			)}
+		</Match>
+		<div class="font-bold text-2xl mb-2 mt-16">{props.title}</div>
 		{props.subtitle ?
 			<span class="
 				rounded-full
