@@ -6,7 +6,7 @@ import Loading from "../loading";
 
 const querySubmissionInfo = gql`
 query Submission($id: UUID!) {
-	submissionById(id: $id) {
+	submission(id: $id) {
 		score {
 			total
 			detailed {

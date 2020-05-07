@@ -11,7 +11,7 @@ import Loading from "../loading";
 
 const querySubmissionSource = gql`
 query Submission($id: UUID!) {
-	submissionById(id: $id) {
+	submission(id: $id) {
 		sourceName
 		body
 	}

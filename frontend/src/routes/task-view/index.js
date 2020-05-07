@@ -10,7 +10,7 @@ import Router from 'preact-router';
 
 const querySubmission = gql`
 query Submission($id: UUID!) {
-	submissionById(id: $id) {
+	submission(id: $id) {
 		task {
 			name
 		}
