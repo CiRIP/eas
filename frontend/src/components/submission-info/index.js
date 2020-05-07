@@ -34,7 +34,7 @@ const SubmissionInfo = props => (
 							</tr>
 						</thead>
 						<tbody>
-							{data.submissionById.score.detailed.map(e => (
+							{data.submission.score.detailed.map(e => (
 								<tr class="border-b border-indigo-lightest hover:bg-grey-lightest no-underline text-black">
 									<td class="p-4">aaa</td>
 									<td class="p-4">{e.status}</td>

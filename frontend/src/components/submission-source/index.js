@@ -31,7 +31,7 @@ const SubmissionSource = props => (
 			{({ loading, error, data }) => {
 				if (loading) return <Loading dark />;
 
-				return <SyntaxHighlighter language="cpp" style={vs}>{data.submissionById.body}</SyntaxHighlighter>
+				return <SyntaxHighlighter language="cpp" style={vs}>{data.submission.body}</SyntaxHighlighter>
 			}}
 		</Query>
 	</div>
