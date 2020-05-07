@@ -55,7 +55,7 @@ UserList.Item = props => (
 
 const View = props => (
 
-	<Query query={queryUsersList}>
+	<Query query={queryUsersList} fetchPolicy='network-only'>
 		{({ loading, error, data }) => {
 			if (loading) return <Loading dark />
 			if (error) return <div>error.message</div>

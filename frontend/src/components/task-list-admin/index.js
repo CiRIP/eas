@@ -35,7 +35,7 @@ TaskList.Item = props => (
 
 const View = props => (
 
-	<Query query={queryTasksList}>
+	<Query query={queryTasksList} fetchPolicy='network-only'>
 		{({ loading, error, data }) => {
 			if (loading) return <Loading dark />
 			if (error) return <div>error.message</div>
