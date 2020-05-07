@@ -34,7 +34,11 @@ import Tasks from '../routes/tasks';
 import TaskView from '../routes/task-view';
 import Login from '../routes/login';
 import Logout from '../routes/logout';
+import Appeals from '../routes/appeals';
+import Admin from '../routes/admin';
+import AdminLogin from '../routes/admin-login';
 
+import Redirect from './redirect';
 
 
 export default class App extends Component {
@@ -48,6 +52,9 @@ export default class App extends Component {
 		switch (e.url) {
 			case '/': break;
 			case '/login': break;
+			case '/admin/login': break;
+			case '/admin': break;
+			case '/admin/users': break;
 			default: if (!sessionStorage.getItem('token')) route('/login', true);
 		}
 	};
@@ -60,6 +67,10 @@ export default class App extends Component {
 						<Home path="/" />
 						<Tasks path="/tasks" />
 						<TaskView path="/tasks/:id/:?" />
+						<Appeals path="/appeals" />
+						<AdminLogin path="/admin/login" />
+						<Redirect path="/admin" to="/admin/users" />
+						<Admin path="/admin/:?/:?" />
 						<Login path="/login" />
 						<Logout path="/logout" />
 					</Router>

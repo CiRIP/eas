@@ -1,16 +1,12 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 
-class Logout extends Component {
+export default class Redirect extends Component {
 	componentWillMount() {
-		console.log('wow');
-		sessionStorage.clear('token');
-		route('/', true);
+		route(this.props.to, true);
 	}
 
 	render() {
 		return null;
 	}
 }
-
-export default Logout;

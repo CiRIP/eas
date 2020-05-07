@@ -32,15 +32,15 @@ const queryTaskList = gql`
 }
 `;
 
-const Tasks = () => (
+const Appeals = () => (
 	<div>
 		<header>
 			<Query query={queryUserInfo}>
 				{({ loading, error, data }) => {
-					if (loading) return <Header.Main parent="/tasks"><Loading /></Header.Main>;
-					if (error) return <Header.Main title="Eroare la obținerea datelor." subtitle={error.message} parent="/tasks" />;
+					if (loading) return <Header.Main><Loading /></Header.Main>;
+					if (error) return <Header.Main title="Eroare la obținerea datelor." subtitle={error.message} />;
 
-					return <Header.Main title={data.currentUser.firstName + ' ' + data.currentUser.lastName} subtitle={data.currentUser.participationId} parent="/tasks" />;
+					return <Header.Main title={data.currentUser.firstName + ' ' + data.currentUser.lastName} subtitle={data.currentUser.participationId} />;
 				}}
 			</Query>
 			<Header.Nav>
@@ -59,4 +59,4 @@ const Tasks = () => (
 	</div>
 )
 
-export default Tasks;
+export default Appeals;

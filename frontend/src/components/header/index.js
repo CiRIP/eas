@@ -17,9 +17,9 @@ Header.Main = props => (
 					border-b border-indigo-black
 					flex flex-row items-center justify-between"
 				>
-					<Link href="/tasks">
+					<Link href={props.parent}>
 						<div class="text-sm w-16">
-							{path == '/tasks' || path == '/tasks/' ? null :
+							{path == props.parent || path == props.parent + '/' ? null :
 							<svg class="fill-current ml-8 align-middle" viewBox="0 0 16 16" height="16">
 								<polyline fill="none" stroke="white" points="12,0 4,8 12,16" />
 							</svg>}

@@ -25,11 +25,11 @@ const TaskView = props => (
 	<div>
 		<Query query={querySubmission} variables={{ id: props.id }}>
 			{({ loading, error, data }) => {
-				if (loading) return <Header.Main><Loading /></Header.Main>;
-				if (error) return <Header.Main title="Eroare la obținerea datelor." subtitle={error.message} />;
+				if (loading) return <Header.Main parent="/tasks"><Loading /></Header.Main>;
+				if (error) return <Header.Main title="Eroare la obținerea datelor." subtitle={error.message} parent="/tasks" />;
 				return (
 					<header>
-						<Header.Main title={data.submission.task.name} subtitle={[data.submission.score.total, <span class="opacity-50 font-normal"> /100</span>]} />
+						<Header.Main title={data.submission.task.name} subtitle={[data.submission.score.total, <span class="opacity-50 font-normal"> /100</span>]} parent="/tasks" />
 						<Header.Nav>
 							<Header.Nav.Link href={'/tasks/' + props.id}>Detalii de evaluare</Header.Nav.Link>
 							<Header.Nav.Link href={'/tasks/' + props.id + '/source'}>Sursă</Header.Nav.Link>
