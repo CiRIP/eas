@@ -3,6 +3,8 @@ import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { route } from 'preact-router';
 
+import { generateAccessCodeFormatted } from '../../utils/access-code';
+
 const mutationRegisterUser = gql`
 mutation registerUser($user: RegisterUserInput!) {
 	registerUser(input: $user) {
@@ -18,7 +20,7 @@ class NewUser extends Component {
 		super(props);
 		this.state = {
 			id: null,
-			accessCode: null,
+			accessCode: generateAccessCodeFormatted(),
 			firstName: null,
 			lastName: null,
 			grade: null,
@@ -28,6 +30,7 @@ class NewUser extends Component {
 
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.generate = this.generate.bind(this);
 	}
 
 	handleInput(e) {
@@ -47,6 +50,12 @@ class NewUser extends Component {
 		}).then(({data}) => {
 			route('/admin/users');
 		}).catch(err => console.error(err));
+	}
+
+	generate() {
+		this.setState({
+			accessCode: generateAccessCodeFormatted()
+		});
 	}
 
 	render() {
@@ -79,7 +88,7 @@ class NewUser extends Component {
 							name="accessCode"
 							id="accessCode"
 							class="
-								block p-4 w-full rounded-none
+								inline-block p-4 rounded-none w-4/5
 								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
 							autocomplete="off"
@@ -88,6 +97,7 @@ class NewUser extends Component {
 							placeholder="1234-TEST-04"
 							required
 						/>
+						<button onClick={this.generate} class="w-1/5 py-2 mb-2 uppercase font-bold text-indigo-light text-xs">Generează</button>
 					</div>
 					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
 						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="lastName">

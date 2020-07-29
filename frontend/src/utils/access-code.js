@@ -35,6 +35,10 @@ export function generateAccessCode(input) {
 	return partials[0] + partials[1] + ('0' + mod).slice(-2);
 }
 
+export function generateAccessCodeFormatted(input) {
+	return generateAccessCode(input).match(/.{1,4}/g).join('-');
+}
+
 function mod97(string) {
 	let checksum = string.slice(0, 2), fragment;
 	for (let offset = 2 ; offset < string.length ; offset += 7) {

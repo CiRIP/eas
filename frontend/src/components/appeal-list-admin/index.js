@@ -57,7 +57,7 @@ const appealStatuses = {
 
 AppealList.Item = props => (
 	<li>
-		<Link class="flex items-center h-16 px-4 border-b border-indigo-lightest hover:bg-grey-lightest no-underline text-black" href={'/appeals/' + props.id}>
+		<Link class="flex items-center h-16 px-4 border-b border-indigo-lightest hover:bg-grey-lightest no-underline text-black" href={'/admin/appeals/' + props.id}>
 			<div class="mr-4"><strong><code>{props.participationId}</code></strong></div>
 			<div class="mr-4"><strong>{props.name}</strong></div>
 			<div class="text-sm opacity-25 mt-1 flex-1">{props.reason}</div>

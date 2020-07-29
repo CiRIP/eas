@@ -5,6 +5,7 @@ import AdminHome from '../../components/admin-home';
 import UserList from '../../components/user-list';
 import TaskListAdmin from '../../components/task-list-admin';
 import AppealListAdmin from '../../components/appeal-list-admin';
+import AppealViewAdmin from '../../components/appeal-view-admin';
 import NewUser from '../../components/new-user';
 import NewTask from '../../components/new-task';
 
@@ -57,6 +58,7 @@ class Admin extends Component {
 					<NewUser path="/admin/users/new" />
 					<TaskListAdmin path="/admin/tasks" />
 					<AppealListAdmin path="/admin/appeals" />
+					<AppealViewAdmin path="/admin/appeals/:id" />
 					<NewTask path="/admin/tasks/new" />
 				</Router>
 			</div>
