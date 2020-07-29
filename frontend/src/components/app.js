@@ -8,6 +8,9 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { API_URL } from '../config.js';
 
+import { generateAccessCode } from '../utils/access-code';
+console.log(generateAccessCode());
+
 const httpLink = createHttpLink({
 	uri: API_URL,
 });
@@ -35,6 +38,8 @@ import TaskView from '../routes/task-view';
 import Login from '../routes/login';
 import Logout from '../routes/logout';
 import Appeals from '../routes/appeals';
+import AppealView from '../routes/appeal-view';
+import NewAppeal from '../routes/new-appeal';
 import Admin from '../routes/admin';
 import AdminLogin from '../routes/admin-login';
 
@@ -68,6 +73,8 @@ export default class App extends Component {
 						<Tasks path="/tasks" />
 						<TaskView path="/tasks/:id/:?" />
 						<Appeals path="/appeals" />
+						<NewAppeal path="/appeals/new" />
+						<AppealView path="/appeals/:id" />
 						<AdminLogin path="/admin/login" />
 						<Redirect path="/admin" to="/admin/users" />
 						<Admin path="/admin/:?/:?" />

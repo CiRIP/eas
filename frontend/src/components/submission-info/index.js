@@ -7,16 +7,26 @@ import Loading from "../loading";
 const querySubmissionInfo = gql`
 query Submission($id: UUID!) {
 	submission(id: $id) {
-		score {
-			total
-			detailed {
+		testResultsList {
+			status
+			score
+			testCase {
+				name
 				value
-				status
 			}
 		}
 	}
 }
 `;
+
+const testCaseStatuses = {
+	OK: 'OK',
+	INCORRECT: 'Răspuns incorect',
+	TIME_LIMIT_EXCEEDED: 'Limită de timp depășită',
+	MEMORY_LIMIT_EXCEEDED: 'Limită de memorie depășită',
+	COMPILE_ERROR: 'Eroare de compilare',
+	RUNTIME_ERROR: 'Eroare de runtime'
+};
 
 const SubmissionInfo = props => (
 	<Query query={querySubmissionInfo} variables={{ id: props.id }}>
@@ -34,11 +44,11 @@ const SubmissionInfo = props => (
 							</tr>
 						</thead>
 						<tbody>
-							{data.submission.score.detailed.map(e => (
+							{data.submission.testResultsList.map(e => (
 								<tr class="border-b border-indigo-lightest hover:bg-grey-lightest no-underline text-black">
-									<td class="p-4">aaa</td>
-									<td class="p-4">{e.status}</td>
-									<td class="p-4">{e.value}</td>
+									<td class="p-4"><code>{e.testCase.name}</code></td>
+									<td class="p-4">{testCaseStatuses[e.status]}</td>
+									<td class="p-4">{e.score}<span class="text-sm opacity-25">/{e.testCase.value}</span></td>
 								</tr>
 							))}
 						</tbody>

@@ -51,147 +51,118 @@ class NewUser extends Component {
 
 	render() {
 		return (
-			<div class="
-				flex flex-col items-center justify-center text-center"
-			>
-				<form class="w-full max-w-xs py-16" onSubmit={this.handleSubmit}>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						ID ELEV
+			<div class="w-full max-w-sm mx-auto p-4">
+				<form class="w-full" onSubmit={this.handleSubmit}>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="id">
+							ID elev
+						</label>
 						<input
 							name="id"
+							id="id"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
+							autocomplete="off"
 							value={this.state.id}
 							onInput={this.handleInput}
 							placeholder="BB_9_123"
+							required
 						/>
-					</label>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						COD ACCES
+					</div>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="accessCode">
+							Cod acces
+						</label>
 						<input
 							name="accessCode"
+							id="accessCode"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
 							autocomplete="off"
 							value={this.state.accessCode}
 							onInput={this.handleInput}
-							placeholder="ABCD-1234"
+							placeholder="1234-TEST-04"
+							required
 						/>
-					</label>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						NUME
+					</div>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="lastName">
+							Nume
+						</label>
 						<input
 							name="lastName"
+							id="lastName"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
 							autocomplete="off"
 							value={this.state.lastName}
 							onInput={this.handleInput}
 							placeholder="Popescu"
+							required
 						/>
-					</label>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						PRENUME
+					</div>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="firstName">
+							Prenume
+						</label>
 						<input
 							name="firstName"
+							id="firstName"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
 							autocomplete="off"
 							value={this.state.firstName}
 							onInput={this.handleInput}
 							placeholder="Ionuț"
+							required
 						/>
-					</label>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						CLASA
+					</div>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="grade">
+							Clasa
+						</label>
 						<input
 							name="grade"
+							id="grade"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
-							type="text"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
+							type="number"
+							min="9"
+							max="12"
 							autocomplete="off"
 							value={this.state.grade}
 							onInput={this.handleInput}
 							placeholder={11}
+							required
 						/>
-					</label>
-
-					<label class="
-						block
-						mb-4
-						bg-indigo-lightest
-						rounded-full
-						text-right text-indigo-black text-xs font-bold"
-					>
-						CENTRU
+					</div>
+					<div class="p-4 border-b border-indigo-lightest no-underline w-full">
+						<label class="block py-2 mb-2 uppercase font-bold text-indigo-light text-xs" for="examCenter">
+							Centru de examen
+						</label>
 						<input
 							name="examCenter"
+							id="examCenter"
 							class="
-								py-3 px-4 ml-2 w-login-input
-								rounded-full rounded-l-none
-								border border-indigo-lightest
-								appearance-none text-base text-grey-darker leading-tight"
+								block p-4 w-full rounded-none
+								appearance-none text-base text-indigo-darker leading-tight"
 							type="text"
 							autocomplete="off"
 							value={this.state.examCenter}
 							onInput={this.handleInput}
 							placeholder="Acasă"
+							required
 						/>
-					</label>
+					</div>
 					
 					<div class="text-center mt-16">
 						<input
@@ -202,7 +173,7 @@ class NewUser extends Component {
 								rounded-full
 								bg-indigo-dark hover:bg-indigo active:bg-indigo-darker
 								shadow-md
-								text-indigo-lightest font-bold leading-none"
+								text-white font-bold leading-none"
 						/>
 					</div>
 				</form>

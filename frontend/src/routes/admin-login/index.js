@@ -40,7 +40,7 @@ class Login extends Component {
 		}).then(({data}) => {
 			if(data.authenticate.jwtToken) sessionStorage.setItem('token', data.authenticate.jwtToken);
 			console.log(data);
-			route('/admin/users');
+			route('/admin');
 		}).catch(err => console.error(err));
 	}
 

@@ -24,7 +24,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE IF NOT EXISTS public.user (
 	id					uuid primary key default uuid_generate_v1mc(),
-	participation_id	text not null,
+	participation_id	text unique not null,
 	first_name			text not null,
 	last_name			text,
 	grade				integer not null,
@@ -53,6 +53,25 @@ COMMENT ON COLUMN public.task.id IS 'Globally unique identifier';
 COMMENT ON COLUMN public.task.name IS 'Task name';
 COMMENT ON COLUMN public.task.source_name IS 'Task source name; optional';
 
+
+CREATE TABLE IF NOT EXISTS public.test_case (
+	id					uuid primary key default uuid_generate_v1mc(),
+	task_id				uuid references public.task(id) not null,
+	name				text not null,
+	value				integer not null,
+	in_file				text,
+	ok_file				text
+);
+
+COMMENT ON TABLE public.test_case IS 'A test case';
+COMMENT ON COLUMN public.test_case.id IS 'Globally unique identifier';
+COMMENT ON COLUMN public.test_case.task_id IS 'Task name';
+COMMENT ON COLUMN public.test_case.name IS 'Test case name';
+COMMENT ON COLUMN public.test_case.value IS 'Test case absolute value';
+COMMENT ON COLUMN public.test_case.in_file IS 'Test case grader input';
+COMMENT ON COLUMN public.test_case.ok_file IS 'Test case grader expected output';
+
+
 DO $$ BEGIN
 CREATE TYPE public.result_status AS ENUM (
 	'OK',
@@ -61,16 +80,6 @@ CREATE TYPE public.result_status AS ENUM (
 	'MEMORY_LIMIT_EXCEEDED',
 	'COMPILE_ERROR',
 	'RUNTIME_ERROR'
-);
-
-CREATE TYPE public.result AS (
-	value				integer,
-	status				public.result_status
-);
-
-CREATE TYPE public.score AS (
-	total				integer,
-	detailed			public.result[]
 );
 
 CREATE TYPE public.jwt_token AS (
@@ -84,11 +93,11 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS public.submission (
 	id					uuid primary key default uuid_generate_v1mc(),
-	author_id			uuid references public.user(id),
-	task_id				uuid references public.task(id),
+	author_id			uuid references public.user(id) not null,
+	task_id				uuid references public.task(id) not null,
 	body				text,
 	source_name			text,
-	score				public.score
+	total_score			integer not null
 );
 
 COMMENT ON TABLE public.submission IS 'A submission';
@@ -97,9 +106,67 @@ COMMENT ON COLUMN public.submission.author_id IS 'Contestant globally unique ide
 COMMENT ON COLUMN public.submission.task_id IS 'Task globally unique idenitifer';
 COMMENT ON COLUMN public.submission.body IS 'Submission source code';
 COMMENT ON COLUMN public.submission.source_name IS 'Submission source name; optional';
-COMMENT ON COLUMN public.submission.score IS 'Contestant graded score';
+COMMENT ON COLUMN public.submission.total_score IS 'Contestant graded score';
 
-COMMENT ON CONSTRAINT submission_author_id_fkey ON public.submission IS E'@foreignFieldName submissions\n@fieldName author';
+COMMENT ON CONSTRAINT submission_author_id_fkey ON public.submission IS E'@foreignFieldName submissions\n@fieldName user';
+
+
+CREATE TABLE IF NOT EXISTS public.test_result (
+	id					uuid primary key default uuid_generate_v1mc(),
+	author_id			uuid references public.user(id) not null,
+	submission_id		uuid references public.submission(id) not null,
+	task_id				uuid references public.task(id) not null,
+	test_case_id		uuid references public.test_case(id) not null,
+	out_file			text,
+	score				integer not null,
+	status				public.result_status,
+	UNIQUE (submission_id, test_case_id)
+);
+
+COMMENT ON CONSTRAINT test_result_author_id_fkey ON public.test_result IS E'@foreignFieldName test_results\n@fieldName user';
+
+
+DO $$ BEGIN
+CREATE TYPE public.appeal_status AS ENUM (
+	'PENDING',
+	'PROCESSING',
+	'FINALIZED',
+	'REJECTED'
+);
+
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+
+CREATE TABLE IF NOT EXISTS public.appeal_reason (
+	id					uuid primary key default uuid_generate_v1mc(),
+	title				text not null,
+	description			text not null
+);
+
+
+CREATE TABLE IF NOT EXISTS public.appeal (
+	id					uuid primary key default uuid_generate_v1mc(),
+	author_id			uuid references public.user(id) not null,
+	submission_id		uuid references public.submission(id) unique not null,
+	reason_id			uuid references public.appeal_reason(id) not null,
+	detailed			text not null,
+	status				public.appeal_status default 'PENDING'::public.appeal_status not null,
+	comment				text,
+	resolution_id		uuid references public.submission(id)
+);
+
+COMMENT ON TABLE public.appeal IS 'An appeal';
+COMMENT ON COLUMN public.appeal.id IS 'Globally unique identifier';
+COMMENT ON COLUMN public.appeal.author_id IS 'Contestant globally unique identifier';
+COMMENT ON COLUMN public.appeal.submission_id IS 'Submission globally unique identifier';
+COMMENT ON COLUMN public.appeal.reason_id IS 'Appeal reason globally unique identifier';
+COMMENT ON COLUMN public.appeal.detailed IS 'Appeal reason details';
+COMMENT ON COLUMN public.appeal.status IS 'Appeal status';
+COMMENT ON COLUMN public.appeal.comment IS 'Appeal resolution comment';
+COMMENT ON COLUMN public.appeal.resolution_id IS 'Resolution submission globally unique identifier';
+
+COMMENT ON CONSTRAINT appeal_author_id_fkey ON public.appeal IS E'@foreignFieldName appeals\n@fieldName user';
 
 
 CREATE TABLE IF NOT EXISTS private.user_account (
@@ -114,7 +181,7 @@ COMMENT ON COLUMN private.user_account.access_code IS 'Contestant access code';
 
 CREATE TABLE IF NOT EXISTS public.admin (
 	id					uuid primary key default uuid_generate_v1mc(),
-	username			text not null,
+	username			text unique not null,
 	first_name			text not null,
 	last_name			text
 );
@@ -149,7 +216,7 @@ CREATE FUNCTION public.register_user(
 	access_code			text
 ) RETURNS public.user AS $$
 DECLARE
-	new_user public.user;
+	new_user			public.user;
 BEGIN
 	INSERT INTO public.user (participation_id, first_name, last_name, grade, exam_center, attendance) VALUES
 		(participation_id, first_name, last_name, grade, exam_center, attendance)
@@ -172,7 +239,7 @@ CREATE FUNCTION public.register_admin(
 	last_name			text
 ) RETURNS public.admin AS $$
 DECLARE
-	new_admin public.admin;
+	new_admin			public.admin;
 BEGIN
 	INSERT INTO public.admin (username, first_name, last_name) VALUES
 		(username, first_name, last_name)
@@ -193,10 +260,10 @@ CREATE FUNCTION public.authenticate(
 	password			text
 ) RETURNS public.jwt_token AS $$
 DECLARE
-	account public.user;
-	auth private.user_account;
-	admin_account public.admin;
-	admin_auth private.admin_account;
+	account				public.user;
+	auth				private.user_account;
+	admin_account		public.admin;
+	admin_auth			private.admin_account;
 BEGIN
 	SELECT a.* INTO admin_account
 		FROM public.admin AS a
@@ -237,6 +304,51 @@ $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.current_user() is 'Gets currently authenticated user by JWT';
 
 
+DROP FUNCTION IF EXISTS public.start_appeal(uuid, uuid, text);
+CREATE FUNCTION public.start_appeal(
+	submission_id		uuid,
+	reason_id			uuid,
+	detailed			text
+) RETURNS public.appeal AS $$
+DECLARE
+	submission			public.submission;
+	appeal				public.appeal;
+BEGIN
+	SELECT s.* INTO submission
+		FROM public.submission AS s
+		WHERE s.id = submission_id;
+	
+	IF submission.author_id::text <> nullif(current_setting('jwt.claims.id', true), '')::text THEN
+		RETURN null;
+	END IF;
+
+	INSERT INTO public.appeal (author_id, submission_id, reason_id, detailed, status) VALUES (
+			nullif(current_setting('jwt.claims.id', true), '')::uuid,
+			submission_id,
+			reason_id,
+			detailed,
+			'PENDING'::public.appeal_status
+		)
+		RETURNING * INTO appeal;
+	
+	RETURN appeal;
+END;
+$$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
+
+
+DO $$ BEGIN
+CREATE TYPE public.configuration AS (
+	detailed_feedback	boolean,
+	test_case_review	boolean,
+	appeals				boolean,
+	statistics			boolean,
+	default_status		public.appeal_status
+);
+
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+
 GRANT USAGE ON SCHEMA public TO anonymous, authenticated, admin_authenticated;
 
 GRANT SELECT ON TABLE public.user TO authenticated, admin_authenticated;
@@ -245,8 +357,20 @@ GRANT INSERT, UPDATE, DELETE ON TABLE public.user to admin_authenticated;
 GRANT SELECT ON TABLE public.task TO anonymous, authenticated, admin_authenticated;
 GRANT INSERT, UPDATE, DELETE ON TABLE public.task to admin_authenticated;
 
+GRANT SELECT ON TABLE public.test_case TO authenticated, admin_authenticated;
+GRANT INSERT, UPDATE, DELETE ON TABLE public.test_case to admin_authenticated;
+
 GRANT SELECT ON TABLE public.submission TO authenticated, admin_authenticated;
 GRANT INSERT, UPDATE, DELETE ON TABLE public.submission to admin_authenticated;
+
+GRANT SELECT ON TABLE public.test_result TO authenticated, admin_authenticated;
+GRANT INSERT, UPDATE, DELETE ON TABLE public.test_result to admin_authenticated;
+
+GRANT SELECT ON TABLE public.appeal_reason TO authenticated, admin_authenticated;
+GRANT INSERT, UPDATE, DELETE ON TABLE public.appeal_reason to admin_authenticated;
+
+GRANT SELECT ON TABLE public.appeal TO authenticated, admin_authenticated;
+GRANT INSERT, UPDATE, DELETE ON TABLE public.appeal TO admin_authenticated;
 
 
 GRANT EXECUTE ON FUNCTION public.authenticate(text, text) TO anonymous, authenticated, admin_authenticated;
@@ -255,14 +379,24 @@ GRANT EXECUTE ON FUNCTION public.current_user() TO anonymous, authenticated, adm
 GRANT EXECUTE ON FUNCTION public.register_user(text, text, text, integer, text, boolean, text) TO admin_authenticated;
 GRANT EXECUTE ON FUNCTION public.register_admin(text, text, text, text) TO admin_authenticated;
 
+GRANT EXECUTE ON FUNCTION public.start_appeal(uuid, uuid, text) TO authenticated;
+
 ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.submission ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.test_result ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.appeal ENABLE ROW LEVEL SECURITY;
 
 DO $$ BEGIN
 CREATE POLICY select_user ON public.user FOR SELECT TO authenticated
 	USING (id::text = nullif(current_setting('jwt.claims.id', true), '')::text);
 
 CREATE POLICY select_submission ON public.submission FOR SELECT TO authenticated
+	USING (author_id::text = nullif(current_setting('jwt.claims.id', true), '')::text);
+
+CREATE POLICY select_test_result ON public.test_result FOR SELECT TO authenticated
+	USING (author_id::text = nullif(current_setting('jwt.claims.id', true), '')::text);
+
+CREATE POLICY select_appeal ON public.appeal FOR SELECT TO authenticated
 	USING (author_id::text = nullif(current_setting('jwt.claims.id', true), '')::text);
 
 EXCEPTION WHEN duplicate_object THEN null;

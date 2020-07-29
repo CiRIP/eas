@@ -2,6 +2,7 @@ import { h } from 'preact';
 import Header from '../../components/header';
 import TaskList from '../../components/task-list';
 import Loading from '../../components/loading';
+import BrokenDocument from '../../components/broken-document';
 
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
@@ -24,8 +25,12 @@ const queryTaskList = gql`
 			task {
 				name
 			}
-			score {
-				total
+			totalScore
+			appeal {
+				id
+				resolution {
+					id
+				}
 			}
 		}
 	}
@@ -51,9 +56,18 @@ const Tasks = () => (
 
 		<Query query={queryTaskList}>
 			{({ loading, error, data }) => {
-				if (loading) return <Loading dark />
+				if (loading) return <Loading dark />;
 
-				return <TaskList>{data.currentUser.submissionsList.map(e => <TaskList.Item name={e.task.name} id={e.id} score={e.score.total} />)}</TaskList>
+				if (!data.currentUser.submissionsList || !data.currentUser.submissionsList.length) return (
+					<div class="container flex flex-col items-center mx-auto list-reset px-4 py-16">
+						<BrokenDocument />
+						<h3>Nu există rezultate</h3>
+						<p class="my-2">Nu ai nicio submisie încă. </p>
+						<h5 class="uppercase text-indigo-light text-xs my-6">Incearcă mai târziu...</h5>
+					</div>
+				);
+
+				return <TaskList>{data.currentUser.submissionsList.map(e => <TaskList.Item name={e.task.name} id={e.id} score={e.totalScore} appealed={!!e.appeal} overruled={e.appeal && !!e.appeal.resolution} />)}</TaskList>
 			}}
 		</Query>
 	</div>

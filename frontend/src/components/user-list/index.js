@@ -7,7 +7,7 @@ import gql from "graphql-tag";
 
 const queryUsersList = gql`
 {
-	usersList {
+	usersList(orderBy: PARTICIPATION_ID_ASC) {
 		id
 		firstName
 		lastName
@@ -15,8 +15,11 @@ const queryUsersList = gql`
 		participationId
 		attendance
 		submissionsList {
-			score {
-				total
+			totalScore
+			appeal {
+				resolution {
+					id
+				}
 			}
 		}
 	}
@@ -70,11 +73,11 @@ const View = props => (
 							<span>Adaugă participant</span>
 						</Link>
 					</div>
-					<UserList>{data.usersList.map(e => <UserList.Item name={e.firstName + ' ' + e.lastName} id={e.id} participationId={e.participationId} attendance={e.attendance} score={e.submissionsList.reduce((acc, i) => acc + i.score.total, 0)} />)}</UserList>
+					<UserList>{data.usersList.map(e => <UserList.Item name={e.firstName + ' ' + e.lastName} id={e.id} participationId={e.participationId} attendance={e.attendance} score={e.submissionsList.reduce((acc, i) => !i.appeal || !i.appeal.resolution ? acc + i.totalScore : acc, 0)} />)}</UserList>
 				</div>
 			);
 		}}
 	</Query>
-)
+);
 
 export default View;

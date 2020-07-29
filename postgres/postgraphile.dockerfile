@@ -1,3 +1,4 @@
 FROM graphile/postgraphile
 
-RUN npm install -g @graphile-contrib/pg-simplify-inflector
+WORKDIR /postgraphile/
+RUN yarn add @graphile-contrib/pg-simplify-inflector

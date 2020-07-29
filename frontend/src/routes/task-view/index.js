@@ -14,9 +14,7 @@ query Submission($id: UUID!) {
 		task {
 			name
 		}
-		score {
-			total
-		}
+		totalScore
 	}
 }
 `;
@@ -29,7 +27,7 @@ const TaskView = props => (
 				if (error) return <Header.Main title="Eroare la obținerea datelor." subtitle={error.message} parent="/tasks" />;
 				return (
 					<header>
-						<Header.Main title={data.submission.task.name} subtitle={[data.submission.score.total, <span class="opacity-50 font-normal"> /100</span>]} parent="/tasks" />
+						<Header.Main title={data.submission.task.name} subtitle={[data.submission.totalScore, <span class="opacity-50 font-normal"> /100</span>]} parent="/tasks" />
 						<Header.Nav>
 							<Header.Nav.Link href={'/tasks/' + props.id}>Detalii de evaluare</Header.Nav.Link>
 							<Header.Nav.Link href={'/tasks/' + props.id + '/source'}>Sursă</Header.Nav.Link>
